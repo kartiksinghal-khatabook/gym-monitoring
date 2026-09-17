@@ -3,6 +3,7 @@ import { useExerciseOverviews } from '../../hooks/useExerciseOverviews';
 import { EmptyState } from '../common/EmptyState';
 import { formatDateKey } from '../../utils/date';
 import { getUnit, formatWeightValue } from '../../utils/units';
+import { formatDistance } from '../../utils/cardio';
 import './ProgressDashboard.css';
 
 export function ProgressDashboard() {
@@ -28,12 +29,18 @@ export function ProgressDashboard() {
                   : 'Not logged yet'}
               </span>
             </div>
-            {o.records.maxWeightSet && (
-              <span className="progress-dashboard__pr">
-                {formatWeightValue(o.records.maxWeightSet.weight, o.records.maxWeightSet.weightMode, unit)} ×{' '}
-                {o.records.maxWeightSet.reps}
-              </span>
-            )}
+            {o.type === 'cardio'
+              ? o.cardioRecords.longestDistanceEntry && (
+                  <span className="progress-dashboard__pr">
+                    {formatDistance(o.cardioRecords.longestDistanceEntry.distanceKm ?? 0)}
+                  </span>
+                )
+              : o.records.maxWeightSet && (
+                  <span className="progress-dashboard__pr">
+                    {formatWeightValue(o.records.maxWeightSet.weight, o.records.maxWeightSet.weightMode, unit)} ×{' '}
+                    {o.records.maxWeightSet.reps}
+                  </span>
+                )}
           </Link>
         </li>
       ))}

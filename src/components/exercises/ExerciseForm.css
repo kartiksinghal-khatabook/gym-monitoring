@@ -26,6 +26,28 @@
   color: var(--text-h);
 }
 
+.exercise-form__type {
+  display: flex;
+  gap: 6px;
+}
+
+.exercise-form__type button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 0.85rem;
+}
+
+.exercise-form__type button.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
 .exercise-form__actions {
   display: flex;
   justify-content: flex-end;

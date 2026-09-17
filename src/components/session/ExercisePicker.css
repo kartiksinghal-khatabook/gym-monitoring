@@ -46,6 +46,33 @@
   background: var(--bg);
 }
 
+.exercise-picker__create {
+  padding: 8px 4px 4px;
+}
+
+.exercise-picker__type {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.exercise-picker__type button {
+  width: auto;
+  flex: 1;
+  padding: 6px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 0.75rem;
+}
+
+.exercise-picker__type button.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
 .exercise-picker__cancel {
   margin-top: 6px;
   background: none;

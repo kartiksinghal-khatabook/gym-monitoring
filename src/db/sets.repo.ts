@@ -9,6 +9,14 @@ export async function listSetsForExercise(exerciseId: string): Promise<SetEntry[
   return db.sets.where('exerciseId').equals(exerciseId).sortBy('createdAt');
 }
 
+async function nextSetNumber(sessionId: string, exerciseId: string): Promise<number> {
+  const priorSets = await db.sets
+    .where('[sessionId+exerciseId]')
+    .equals([sessionId, exerciseId])
+    .count();
+  return priorSets + 1;
+}
+
 export async function addSet(
   sessionId: string,
   exerciseId: string,
@@ -16,16 +24,11 @@ export async function addSet(
   reps: number,
   weightMode: WeightMode = 'weight',
 ): Promise<SetEntry> {
-  const priorSets = await db.sets
-    .where('[sessionId+exerciseId]')
-    .equals([sessionId, exerciseId])
-    .count();
-
   const set: SetEntry = {
     id: crypto.randomUUID(),
     sessionId,
     exerciseId,
-    setNumber: priorSets + 1,
+    setNumber: await nextSetNumber(sessionId, exerciseId),
     weight,
     weightMode,
     reps,
@@ -35,9 +38,30 @@ export async function addSet(
   return set;
 }
 
+export async function addCardioEntry(
+  sessionId: string,
+  exerciseId: string,
+  durationMinutes: number,
+  distanceKm: number,
+): Promise<SetEntry> {
+  const entry: SetEntry = {
+    id: crypto.randomUUID(),
+    sessionId,
+    exerciseId,
+    setNumber: await nextSetNumber(sessionId, exerciseId),
+    weight: 0,
+    reps: 0,
+    durationMinutes,
+    distanceKm,
+    createdAt: Date.now(),
+  };
+  await db.sets.add(entry);
+  return entry;
+}
+
 export async function updateSet(
   id: string,
-  changes: Partial<Pick<SetEntry, 'weight' | 'reps' | 'notes'>>,
+  changes: Partial<Pick<SetEntry, 'weight' | 'reps' | 'durationMinutes' | 'distanceKm' | 'notes'>>,
 ): Promise<void> {
   await db.sets.update(id, changes);
 }

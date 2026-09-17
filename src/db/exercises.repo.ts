@@ -1,5 +1,5 @@
 import { db } from './schema';
-import type { Exercise } from '../types/models';
+import type { ActivityType, Exercise } from '../types/models';
 
 export async function listExercises(): Promise<Exercise[]> {
   return db.exercises
@@ -12,11 +12,16 @@ export async function getExercise(id: string): Promise<Exercise | undefined> {
   return db.exercises.get(id);
 }
 
-export async function createExercise(name: string, category?: string): Promise<Exercise> {
+export async function createExercise(
+  name: string,
+  category?: string,
+  type: ActivityType = 'strength',
+): Promise<Exercise> {
   const exercise: Exercise = {
     id: crypto.randomUUID(),
     name: name.trim(),
     category: category?.trim() || undefined,
+    type,
     createdAt: Date.now(),
   };
   await db.exercises.add(exercise);

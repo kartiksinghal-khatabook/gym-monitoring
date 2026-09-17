@@ -19,8 +19,10 @@ export function ExerciseList() {
           <li key={exercise.id}>
             <Link to={`/exercises/${exercise.id}`} className="exercise-list__item">
               <span>{exercise.name}</span>
-              {exercise.category && (
-                <span className="exercise-list__category">{exercise.category}</span>
+              {(exercise.category || exercise.type === 'cardio') && (
+                <span className="exercise-list__category">
+                  {exercise.category || 'Cardio'}
+                </span>
               )}
             </Link>
           </li>

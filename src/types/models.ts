@@ -7,10 +7,14 @@ export type WeightUnit = 'kg' | 'lb';
  */
 export type WeightMode = 'weight' | 'bars';
 
+/** 'cardio' exercises log duration/distance instead of weight/reps. Absent on an Exercise means 'strength' (legacy default). */
+export type ActivityType = 'strength' | 'cardio';
+
 export interface Exercise {
   id: string;
   name: string;
   category?: string;
+  type?: ActivityType;
   createdAt: number;
   archivedAt?: number;
 }
@@ -28,9 +32,13 @@ export interface SetEntry {
   sessionId: string;
   exerciseId: string;
   setNumber: number;
+  // Strength fields (unused/0 on a cardio entry):
   weight: number;
   weightMode?: WeightMode;
   reps: number;
+  // Cardio fields (only present on a cardio entry):
+  durationMinutes?: number;
+  distanceKm?: number;
   notes?: string;
   createdAt: number;
 }

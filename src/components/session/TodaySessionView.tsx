@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useTodaySession } from '../../hooks/useTodaySession';
 import { useExercises } from '../../hooks/useExercises';
-import { addSet } from '../../db/sets.repo';
+import { addSet, addCardioEntry } from '../../db/sets.repo';
 import type { Exercise, WeightMode } from '../../types/models';
 import { ExercisePicker } from './ExercisePicker';
 import { SetEntryRow } from './SetEntryRow';
+import { CardioEntryRow } from './CardioEntryRow';
 import { SetList } from './SetList';
 import { EmptyState } from '../common/EmptyState';
 import { BackupReminder } from '../common/BackupReminder';
@@ -46,6 +47,11 @@ export function TodaySessionView() {
     await addSet(session.id, exerciseId, weight, reps, weightMode);
   }
 
+  async function handleAddCardioEntry(exerciseId: string, durationMinutes: number, distanceKm: number) {
+    if (!session) return;
+    await addCardioEntry(session.id, exerciseId, durationMinutes, distanceKm);
+  }
+
   if (!session) return null;
 
   return (
@@ -62,16 +68,27 @@ export function TodaySessionView() {
         const exercise = exerciseById.get(exerciseId);
         const exerciseSets = setsByExercise.get(exerciseId) ?? [];
         const last = exerciseSets[exerciseSets.length - 1];
+        const isCardio = exercise?.type === 'cardio';
         return (
           <section key={exerciseId} className="today-session__exercise">
             <h2>{exercise?.name ?? '...'}</h2>
             <SetList sets={exerciseSets} />
-            <SetEntryRow
-              exerciseId={exerciseId}
-              defaultWeight={last?.weight ?? 0}
-              defaultReps={last?.reps ?? 0}
-              onAdd={(weight, reps, weightMode) => handleAddSet(exerciseId, weight, reps, weightMode)}
-            />
+            {isCardio ? (
+              <CardioEntryRow
+                defaultDurationMinutes={last?.durationMinutes ?? 0}
+                defaultDistanceKm={last?.distanceKm ?? 0}
+                onAdd={(durationMinutes, distanceKm) =>
+                  handleAddCardioEntry(exerciseId, durationMinutes, distanceKm)
+                }
+              />
+            ) : (
+              <SetEntryRow
+                exerciseId={exerciseId}
+                defaultWeight={last?.weight ?? 0}
+                defaultReps={last?.reps ?? 0}
+                onAdd={(weight, reps, weightMode) => handleAddSet(exerciseId, weight, reps, weightMode)}
+              />
+            )}
           </section>
         );
       })}

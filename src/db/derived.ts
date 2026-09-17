@@ -1,6 +1,6 @@
 import { db } from './schema';
 import { listExercises } from './exercises.repo';
-import type { SetEntry, WeightMode, WorkoutSession } from '../types/models';
+import type { ActivityType, SetEntry, WeightMode, WorkoutSession } from '../types/models';
 
 export interface PersonalRecords {
   maxWeightSet: SetEntry | null;
@@ -21,6 +21,27 @@ export async function getPersonalRecords(exerciseId: string): Promise<PersonalRe
   return { maxWeightSet, maxRepsSet };
 }
 
+export interface CardioRecords {
+  longestDistanceEntry: SetEntry | null;
+  longestDurationEntry: SetEntry | null;
+}
+
+export async function getCardioRecords(exerciseId: string): Promise<CardioRecords> {
+  const sets = (await db.sets.where('exerciseId').equals(exerciseId).toArray()).filter(
+    (s) => s.distanceKm !== undefined || s.durationMinutes !== undefined,
+  );
+  if (sets.length === 0) return { longestDistanceEntry: null, longestDurationEntry: null };
+
+  const longestDistanceEntry = sets.reduce((best, s) =>
+    (s.distanceKm ?? 0) > (best.distanceKm ?? 0) ? s : best,
+  );
+  const longestDurationEntry = sets.reduce((best, s) =>
+    (s.durationMinutes ?? 0) > (best.durationMinutes ?? 0) ? s : best,
+  );
+
+  return { longestDistanceEntry, longestDurationEntry };
+}
+
 export interface SessionDataPoint {
   session: WorkoutSession;
   sets: SetEntry[];
@@ -29,6 +50,9 @@ export interface SessionDataPoint {
   topWeightMode: WeightMode;
   topReps: number;
   volume: number;
+  /** Cardio aggregates — 0 on a strength session's sets, harmless since unused there. */
+  topDistanceKm: number;
+  totalDurationMinutes: number;
 }
 
 /** Sessions containing this exercise, sorted oldest -> newest, each aggregated for charting/history. */
@@ -58,6 +82,8 @@ export async function getExerciseHistory(exerciseId: string): Promise<SessionDat
       topWeightMode: topSet.weightMode ?? 'weight',
       topReps: Math.max(...sessionSets.map((s) => s.reps)),
       volume: sessionSets.reduce((sum, s) => sum + s.weight * s.reps, 0),
+      topDistanceKm: Math.max(...sessionSets.map((s) => s.distanceKm ?? 0)),
+      totalDurationMinutes: sessionSets.reduce((sum, s) => sum + (s.durationMinutes ?? 0), 0),
     });
   });
 
@@ -73,8 +99,10 @@ export interface ExerciseOverview {
   exerciseId: string;
   name: string;
   category?: string;
+  type: ActivityType;
   lastTrainedDate: string | null;
   records: PersonalRecords;
+  cardioRecords: CardioRecords;
 }
 
 /** One summary row per exercise, for the cross-exercise progress dashboard. */
@@ -84,7 +112,13 @@ export async function getExerciseOverviews(): Promise<ExerciseOverview[]> {
   const overviews = await Promise.all(
     exercises.map(async (exercise) => {
       const sets = await db.sets.where('exerciseId').equals(exercise.id).toArray();
-      const records = await getPersonalRecords(exercise.id);
+      const type = exercise.type ?? 'strength';
+      const records =
+        type === 'strength' ? await getPersonalRecords(exercise.id) : { maxWeightSet: null, maxRepsSet: null };
+      const cardioRecords =
+        type === 'cardio'
+          ? await getCardioRecords(exercise.id)
+          : { longestDistanceEntry: null, longestDurationEntry: null };
 
       let lastTrainedDate: string | null = null;
       if (sets.length > 0) {
@@ -98,8 +132,10 @@ export async function getExerciseOverviews(): Promise<ExerciseOverview[]> {
         exerciseId: exercise.id,
         name: exercise.name,
         category: exercise.category,
+        type,
         lastTrainedDate,
         records,
+        cardioRecords,
       };
     }),
   );
