@@ -1,0 +1,38 @@
+.number-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.number-stepper__label {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.number-stepper__controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.number-stepper__controls button {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-h);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.number-stepper__controls input {
+  width: 64px;
+  height: 40px;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-h);
+}

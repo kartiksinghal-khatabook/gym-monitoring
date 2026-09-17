@@ -1,0 +1,47 @@
+.exercise-form__open {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+  background: none;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.exercise-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.exercise-form input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.exercise-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.exercise-form__actions button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.exercise-form__actions button.primary {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
+}

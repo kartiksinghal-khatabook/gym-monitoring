@@ -1,0 +1,21 @@
+.trend-chart {
+  margin-bottom: 20px;
+}
+
+.trend-chart h3 {
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.trend-chart--empty {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.trend-chart--empty p {
+  font-size: 0.85rem;
+  opacity: 0.6;
+  margin: 0;
+}
