@@ -1,5 +1,5 @@
 import type { PersonalRecords } from '../../db/derived';
-import { getUnit } from '../../utils/units';
+import { getUnit, formatWeightValue } from '../../utils/units';
 import './PRBadge.css';
 
 export function PRBadge({ records }: { records: PersonalRecords | null | undefined }) {
@@ -12,10 +12,12 @@ export function PRBadge({ records }: { records: PersonalRecords | null | undefin
   return (
     <div className="pr-badge">
       <div className="pr-badge__stat">
-        <span className="pr-badge__label">Max weight</span>
+        <span className="pr-badge__label">
+          {records.maxWeightSet?.weightMode === 'bars' ? 'Max bars' : 'Max weight'}
+        </span>
         <span className="pr-badge__value">
           {records.maxWeightSet
-            ? `${records.maxWeightSet.weight} ${unit} × ${records.maxWeightSet.reps}`
+            ? `${formatWeightValue(records.maxWeightSet.weight, records.maxWeightSet.weightMode, unit)} × ${records.maxWeightSet.reps}`
             : '—'}
         </span>
       </div>
@@ -23,7 +25,7 @@ export function PRBadge({ records }: { records: PersonalRecords | null | undefin
         <span className="pr-badge__label">Max reps</span>
         <span className="pr-badge__value">
           {records.maxRepsSet
-            ? `${records.maxRepsSet.reps} @ ${records.maxRepsSet.weight} ${unit}`
+            ? `${records.maxRepsSet.reps} @ ${formatWeightValue(records.maxRepsSet.weight, records.maxRepsSet.weightMode, unit)}`
             : '—'}
         </span>
       </div>

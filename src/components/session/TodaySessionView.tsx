@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTodaySession } from '../../hooks/useTodaySession';
 import { useExercises } from '../../hooks/useExercises';
 import { addSet } from '../../db/sets.repo';
-import type { Exercise } from '../../types/models';
+import type { Exercise, WeightMode } from '../../types/models';
 import { ExercisePicker } from './ExercisePicker';
 import { SetEntryRow } from './SetEntryRow';
 import { SetList } from './SetList';
@@ -41,9 +41,9 @@ export function TodaySessionView() {
     setActiveExerciseIds((ids) => (ids.includes(exercise.id) ? ids : [...ids, exercise.id]));
   }
 
-  async function handleAddSet(exerciseId: string, weight: number, reps: number) {
+  async function handleAddSet(exerciseId: string, weight: number, reps: number, weightMode: WeightMode) {
     if (!session) return;
-    await addSet(session.id, exerciseId, weight, reps);
+    await addSet(session.id, exerciseId, weight, reps, weightMode);
   }
 
   if (!session) return null;
@@ -67,9 +67,10 @@ export function TodaySessionView() {
             <h2>{exercise?.name ?? '...'}</h2>
             <SetList sets={exerciseSets} />
             <SetEntryRow
+              exerciseId={exerciseId}
               defaultWeight={last?.weight ?? 0}
               defaultReps={last?.reps ?? 0}
-              onAdd={(weight, reps) => handleAddSet(exerciseId, weight, reps)}
+              onAdd={(weight, reps, weightMode) => handleAddSet(exerciseId, weight, reps, weightMode)}
             />
           </section>
         );

@@ -1,6 +1,6 @@
 import type { SetEntry } from '../../types/models';
 import { deleteSet } from '../../db/sets.repo';
-import { getUnit } from '../../utils/units';
+import { getUnit, formatWeightValue } from '../../utils/units';
 import './SetList.css';
 
 export function SetList({ sets }: { sets: SetEntry[] }) {
@@ -12,7 +12,7 @@ export function SetList({ sets }: { sets: SetEntry[] }) {
         <li key={set.id} className="set-list__row">
           <span className="set-list__number">#{set.setNumber}</span>
           <span>
-            {set.weight} {unit} × {set.reps}
+            {formatWeightValue(set.weight, set.weightMode, unit)} × {set.reps}
           </span>
           <button
             type="button"

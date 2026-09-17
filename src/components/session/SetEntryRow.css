@@ -20,3 +20,25 @@
 .set-entry-row__add:disabled {
   opacity: 0.5;
 }
+
+.set-entry-row__mode {
+  display: flex;
+  gap: 6px;
+}
+
+.set-entry-row__mode button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.8rem;
+}
+
+.set-entry-row__mode button.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
+  font-weight: 600;
+}

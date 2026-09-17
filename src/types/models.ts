@@ -1,5 +1,12 @@
 export type WeightUnit = 'kg' | 'lb';
 
+/**
+ * 'bars' is for machines where the real per-plate weight is unknown — `weight`
+ * on the set then holds a bar/plate count instead of an actual weight. Absent
+ * on a SetEntry means 'weight' (legacy data predates this field).
+ */
+export type WeightMode = 'weight' | 'bars';
+
 export interface Exercise {
   id: string;
   name: string;
@@ -22,6 +29,7 @@ export interface SetEntry {
   exerciseId: string;
   setNumber: number;
   weight: number;
+  weightMode?: WeightMode;
   reps: number;
   notes?: string;
   createdAt: number;

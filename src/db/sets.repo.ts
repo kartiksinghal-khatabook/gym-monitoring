@@ -1,5 +1,5 @@
 import { db } from './schema';
-import type { SetEntry } from '../types/models';
+import type { SetEntry, WeightMode } from '../types/models';
 
 export async function listSetsForSession(sessionId: string): Promise<SetEntry[]> {
   return db.sets.where('sessionId').equals(sessionId).sortBy('createdAt');
@@ -14,6 +14,7 @@ export async function addSet(
   exerciseId: string,
   weight: number,
   reps: number,
+  weightMode: WeightMode = 'weight',
 ): Promise<SetEntry> {
   const priorSets = await db.sets
     .where('[sessionId+exerciseId]')
@@ -26,6 +27,7 @@ export async function addSet(
     exerciseId,
     setNumber: priorSets + 1,
     weight,
+    weightMode,
     reps,
     createdAt: Date.now(),
   };

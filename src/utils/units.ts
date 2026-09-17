@@ -1,4 +1,4 @@
-import type { WeightUnit } from '../types/models';
+import type { WeightMode, WeightUnit } from '../types/models';
 
 const UNIT_STORAGE_KEY = 'gym-monitoring:unit';
 
@@ -17,4 +17,10 @@ export function setUnit(unit: WeightUnit): void {
   } catch {
     // localStorage unavailable (e.g. private mode) — unit preference just won't persist.
   }
+}
+
+/** Formats a set's weight/bar-count value with the right label — "12.5 kg" or "3 bars". */
+export function formatWeightValue(weight: number, weightMode: WeightMode | undefined, unit: WeightUnit): string {
+  if (weightMode === 'bars') return `${weight} ${weight === 1 ? 'bar' : 'bars'}`;
+  return `${weight} ${unit}`;
 }

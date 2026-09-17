@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useExerciseOverviews } from '../../hooks/useExerciseOverviews';
 import { EmptyState } from '../common/EmptyState';
 import { formatDateKey } from '../../utils/date';
-import { getUnit } from '../../utils/units';
+import { getUnit, formatWeightValue } from '../../utils/units';
 import './ProgressDashboard.css';
 
 export function ProgressDashboard() {
@@ -30,7 +30,8 @@ export function ProgressDashboard() {
             </div>
             {o.records.maxWeightSet && (
               <span className="progress-dashboard__pr">
-                {o.records.maxWeightSet.weight} {unit} × {o.records.maxWeightSet.reps}
+                {formatWeightValue(o.records.maxWeightSet.weight, o.records.maxWeightSet.weightMode, unit)} ×{' '}
+                {o.records.maxWeightSet.reps}
               </span>
             )}
           </Link>

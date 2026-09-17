@@ -8,7 +8,7 @@ import { RepsTrendChart } from '../components/charts/RepsTrendChart';
 import { VolumeTrendChart } from '../components/charts/VolumeTrendChart';
 import { EmptyState } from '../components/common/EmptyState';
 import { formatDateKey } from '../utils/date';
-import { getUnit } from '../utils/units';
+import { getUnit, formatWeightValue } from '../utils/units';
 
 export function ExerciseDetail() {
   const { id } = useParams<{ id: string }>();
@@ -40,7 +40,9 @@ export function ExerciseDetail() {
               <li key={point.session.id} style={{ marginBottom: 12 }}>
                 <strong>{formatDateKey(point.session.date)}</strong>
                 <div style={{ fontSize: '0.85rem', opacity: 0.8 }}>
-                  {point.sets.map((s) => `${s.weight}${unit}×${s.reps}`).join(', ')}
+                  {point.sets
+                    .map((s) => `${formatWeightValue(s.weight, s.weightMode, unit)}×${s.reps}`)
+                    .join(', ')}
                 </div>
               </li>
             ))}

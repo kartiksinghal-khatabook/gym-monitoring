@@ -1,6 +1,6 @@
 import { db } from './schema';
 import { listExercises } from './exercises.repo';
-import type { SetEntry, WorkoutSession } from '../types/models';
+import type { SetEntry, WeightMode, WorkoutSession } from '../types/models';
 
 export interface PersonalRecords {
   maxWeightSet: SetEntry | null;
@@ -25,6 +25,8 @@ export interface SessionDataPoint {
   session: WorkoutSession;
   sets: SetEntry[];
   topWeight: number;
+  /** weightMode of whichever set achieved topWeight — used to label chart axes ("kg" vs "bars"). */
+  topWeightMode: WeightMode;
   topReps: number;
   volume: number;
 }
@@ -48,16 +50,23 @@ export async function getExerciseHistory(exerciseId: string): Promise<SessionDat
   sessions.forEach((session, i) => {
     if (!session) return;
     const sessionSets = setsBySession.get(sessionIds[i])!;
+    const topSet = sessionSets.reduce((best, s) => (s.weight > best.weight ? s : best));
     points.push({
       session,
       sets: sessionSets.sort((a, b) => a.setNumber - b.setNumber),
-      topWeight: Math.max(...sessionSets.map((s) => s.weight)),
+      topWeight: topSet.weight,
+      topWeightMode: topSet.weightMode ?? 'weight',
       topReps: Math.max(...sessionSets.map((s) => s.reps)),
       volume: sessionSets.reduce((sum, s) => sum + s.weight * s.reps, 0),
     });
   });
 
   return points.sort((a, b) => a.session.date.localeCompare(b.session.date));
+}
+
+/** Which unit to label a whole chart with — uses the most recent session's mode, since an exercise's mode rarely changes. */
+export function getDominantWeightMode(history: SessionDataPoint[]): WeightMode {
+  return history.at(-1)?.topWeightMode ?? 'weight';
 }
 
 export interface ExerciseOverview {
