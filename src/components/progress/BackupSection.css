@@ -1,0 +1,44 @@
+.backup-section {
+  margin-top: 24px;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.backup-section h2 {
+  font-size: 0.95rem;
+}
+
+.backup-section__status {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+.backup-section__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.backup-section__actions button {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 0.85rem;
+}
+
+.backup-section__actions button.primary {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
+}
+
+.backup-section__message {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}

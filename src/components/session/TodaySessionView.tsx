@@ -7,6 +7,7 @@ import { ExercisePicker } from './ExercisePicker';
 import { SetEntryRow } from './SetEntryRow';
 import { SetList } from './SetList';
 import { EmptyState } from '../common/EmptyState';
+import { BackupReminder } from '../common/BackupReminder';
 import './TodaySessionView.css';
 
 export function TodaySessionView() {
@@ -50,6 +51,8 @@ export function TodaySessionView() {
   return (
     <div className="today-session">
       <h1>Today</h1>
+
+      <BackupReminder hasData={(exercises?.length ?? 0) > 0} />
 
       {orderedExerciseIds.length === 0 && (
         <EmptyState>Add an exercise below to start logging today's session.</EmptyState>
